@@ -3,11 +3,41 @@
 # Table of Contents
 
 
-# Intruduction 
+# Introduction 
 
 Install and run FusionInventory Agent with netwok discovery modules
 
-# Deploy FusionInventory Agent
+# Deploy FusionInventory agent with docker-compose
+**docker-compose.yml**
+```
+version: "3.9"
+
+services:
+  fusioninventory-agent-discoverer:
+    image: "docsvt/fusioninventory-agent-discoverer:latest"
+    container_name: "fusioninventory-agent-discoverer"
+    hostname: "fa-discoverer"
+    ports:
+      - "62354"
+    volumes:
+      - "/volume1/docker/fusioninventory-agent-discoverer/data/conf.d/:/etc/fusioninventory/conf.d/:ro"
+    environment:
+      - DEBUG=true
+      - SERVER=https://glpi.local.lab:8443/plugins/fusioninventory/
+      - OPTIONS=--no-ssl-check
+    restart: unless-stopped
+```
+# Ports
+Agent include embedded HTTP server on port 62354.
+Exposing port from command line 
+```sh
+docker run --name fusioninventory-agent-discoverer --port 62345:62345/tcp
+```
+Exposing port from docker-compose
+```sh
+ports:
+  - 62345:62345
+```
 
 # Enviroment variables
 ## OPTIONS
@@ -25,7 +55,6 @@ From docker-compose
 enviroment:
   - OPTIONS=--no-ssl-check
 ```
-
 
 ## SERVER
 
